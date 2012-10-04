@@ -1,7 +1,8 @@
 #!/bin/sh
 
-echo -n "Building PostgreSQL, version "
-sed -n -r 's/#define PG_VERSION "(.*)"/\1/p' src/include/pg_config.h
-
+root=$(pwd)
+cd $root/postgresql-*
 ./configure --prefix=/app/vendor --with-openssl  
 make && make install
+rm -rf $root/*
+mv /app/vendor/* $root/
