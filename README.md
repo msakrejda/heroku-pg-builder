@@ -1,66 +1,33 @@
 # pg-builder
 
-`pg-builder` is a tool to build Postgres client binaries
-for use in a Heroku Cedar application.
+`pg-builder` is a tool to build Postgres binaries for use in a Heroku
+Cedar-14 application. It relies on Docker. It's intended to make it
+easy to vendor tools like `pg_dump` and `pg_restore`.
 
-Usage:
+## Usage
 
-    ./pg-builder available ([-n LIMIT] | [-v VERSION])
-    ./pg-builder build [-v VERSION]
+Install [docker](https://www.docker.io/).
 
-`pg-builder available` shows the available versions which
-may be built (last 10 by default, can be altered or just
-filtered down to a single major version):
+Check the available postgres versions at https://ftp.postgresql.org/pub/source/
 
-```
-$ ./pg-builder available -n3
-9.2rc1
-9.2.0
-9.2.1
-$ ./pg-builder available -v 9.2
-9.2beta1
-9.2beta2
-9.2beta3
-9.2beta4
-9.2rc1
-9.2.0
-9.2.1
-```
-
-Note that pg-builder can only build the versions available on [the
-Postgres FTP site](http://ftp.postgresql.org/pub/source/).
-
-`pg-builder build` builds a given version. By default, it builds the
-latest stable version available. It operates in its workspace
-directory and produces a directory of client binaries and libraries
-which may be copied into a Heroku Cedar app.
+Build:
 
 ```
-$ ./pg-builder build -v 9.0.10
-Building Postgres 9.0.10
-Launching build process... done 
-Preparing app for compilation... done 
-Fetching buildpack... done 
-Detecting buildpack... done, Custom 
-Fetching cache... empty 
-Compiling app... 
-checking build system type... x86_64-unknown-linux-gnu
-checking host system type... x86_64-unknown-linux-gnu
-...
-...
-...
-make[1]: Leaving directory `/tmp/compile_gbzbm/postgresql-9.0.10/config'
-PostgreSQL installation complete.
-Writing .profile... done 
-Writing .profile.d/buildpack.sh... done 
-Putting cache... done 
-Creating slug... done 
-Uploading slug... done 
-Success, slug is https://api.anvilworks.org/slugs/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.tgz 
-Finished building Postgres 9.0.10
-
-    Build complete. You can copy 'workspace/pg' into the vendor
-    directory your Heroku Cedar application, run 'heroku config:add
-    LD_LIBRARY_PATH=/app/vendor/pg/lib' and use any postgres client
-    binary with its full path in '/app/vendor/pg/bin'.
+$ docker build -t your-username/pg-builder .
+$ docker run -i -v ~/pg-build:/tmp/pg -e PG_VERSION=9.4.0 your-username/pg-builder
 ```
+
+This will build Postgres 9.4.0 and place the resulting binaries in
+`~/pg-build`.
+
+
+## Building for the legacy Cedar stack (a.k.a. cedar-10)
+
+In order to support Cedar-14, `pg-builder` had to change drastically,
+since some of the infrastructure it depended on is no longer
+available. As a result, building for cedar-10 is no longer supported.
+
+The easiest way to build for cedar-10 is to check out the previous
+version, 5b631c0eb82e085f729caea5b0d3bbb946e9a121. It should also be
+possible to add cedar-10 support by using a Dockerfile based on
+cedar-10.
