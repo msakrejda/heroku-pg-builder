@@ -13,11 +13,11 @@ Check the available postgres versions at https://ftp.postgresql.org/pub/source/
 Build:
 
 ```
-$ docker build -t your-username/pg-builder .
-$ docker run -i -v ~/pg-build:/tmp/pg -e PG_VERSION=9.4.0 your-username/pg-builder
+$ sudo docker build -t $(whoami)/pg-builder .
+$ sudo docker run -i -v ~/pg-build:/tmp/pg -e PG_VERSION=9.5.0 $(whoami)/pg-builder
 ```
 
-This will build Postgres 9.4.0 and place the resulting binaries in
+This will build Postgres 9.5.0 and place the resulting binaries in
 `~/pg-build`.
 
 
